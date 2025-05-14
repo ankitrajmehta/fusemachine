@@ -1,4 +1,3 @@
-
 services:
   backend:
     image: chatapp-backend
@@ -16,6 +15,9 @@ services:
     # command: ["uvicorn", "mysite.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     env_file:
       - ./chat_app_backend/.env
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
     container_name: chat_app_backend_app
 
   frontend:
@@ -32,7 +34,7 @@ services:
     container_name: chat_app_frontend_app
     depends_on:
       - backend
-  
+
   mongodb:
     image: mongo:8.0.9
     container_name: chat_app_mongodb
@@ -40,6 +42,9 @@ services:
            - chat_app_mongodb_data:/data/db
     env_file:
       - ./mongodb/.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
 
 volumes:
   chat_app_mongodb_data:

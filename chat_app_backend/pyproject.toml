@@ -12,7 +12,7 @@ authors = [
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    
+
 ]
 
 [tool.ruff]
@@ -26,4 +26,3 @@ extend-select = ["I"]  # Add import sorting
 [tool.ruff.lint.isort]
 known-first-party = ["mysite"]
 force-sort-within-sections = true
-

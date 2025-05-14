@@ -157,7 +157,7 @@
                     });
                     if (!response.ok) throw new Error('Server error');
                     const data = await response.json();
-                    showResult(`Sentiment Score: ${data.sentinment}`);
+                    showResult(`Sentiment Score (-1: Negetive, 1: Positive): ${data.sentinment}`);
                     fetchHistory();
                 } catch (err) {
                     showError('Failed to analyze sentiment.');

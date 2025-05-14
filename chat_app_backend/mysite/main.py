@@ -17,7 +17,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -53,7 +53,7 @@ llm_client = Groq(
 )
 
 async def calculate_sentinment(user_message: str) -> str:
-    
+
     chat_completion = llm_client.chat.completions.create(
         messages=[
             {
@@ -94,7 +94,7 @@ async def create_message(message: Message):
         return MessageInDB(**created_message)
     else:
         raise HTTPException(status_code=404, detail="Message not Created")
-    
+
 
 
 @app.get("/messages/{message_id}", response_model=MessageInDB)
@@ -126,7 +126,7 @@ async def create_message_happy(message: Message):
         return MessageInDB(**created_message)
     else:
         raise HTTPException(status_code=404, detail="Message not Created")
-    
+
 @app.post("/messages/sad/", response_model=MessageInDB)
 async def create_message_sad(message: Message):
     message_data = message.model_dump()
