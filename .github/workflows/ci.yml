@@ -23,6 +23,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create mongodb .env file
+        run: |
+          mkdir -p mongodb
+          echo "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}" > mongodb/.env
+          echo "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}" >> mongodb/.env
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
