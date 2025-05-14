@@ -1,0 +1,45 @@
+
+services:
+  backend:
+    image: chatapp-backend
+    pull_policy: never
+    build:
+      context: ./chat_app_backend
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - "8000:8000"
+    # To enable live reload for development, uncomment the following lines
+    # and ensure your backend Dockerfile's CMD or this command uses --reload.
+    # volumes:
+    #   - ./backend/src:/app/src
+    # command: ["uvicorn", "mysite.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    env_file:
+      - ./chat_app_backend/.env
+    container_name: chat_app_backend_app
+
+  frontend:
+    image: chatapp-frontend
+    pull_policy: never
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile # Make sure this Dockerfile exists and serves your frontend
+    ports:
+      - "80:80" # Assumes your frontend container serves on port 80
+    # For live reload on frontend (if applicable, e.g., static files with Nginx)
+    # volumes:
+    #  - ./frontend/static:/usr/share/nginx/html # Example for Nginx
+    container_name: chat_app_frontend_app
+    depends_on:
+      - backend
+  
+  mongodb:
+    image: mongo:8.0.9
+    container_name: chat_app_mongodb
+    volumes:
+           - chat_app_mongodb_data:/data/db
+    env_file:
+      - ./mongodb/.env
+
+volumes:
+  chat_app_mongodb_data:

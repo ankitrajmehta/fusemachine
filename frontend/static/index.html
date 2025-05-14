@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            margin-top: 60px;
+            padding: 32px 24px 24px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+        }
+        label {
+            font-weight: bold;
+            color: #4a5568;
+        }
+        textarea {
+            width: 100%;
+            min-height: 60px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        button {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 6px;
+            background: #3182ce;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        .result {
+            margin-top: 18px;
+            padding: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            color: #2d3748;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        .error {
+            color: #e53e3e;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentiment Converter</h1>
+        <h5>Made by Ankit Raj Mehta, powered by Llama and Groq API</h5>
+        <label for="user-message">Your Message:</label>
+        <textarea id="user-message" placeholder="Type your message..."></textarea>
+        <div class="btn-row">
+            <button id="analyze-btn">Analyze Sentiment</button>
+            <button id="happy-btn">Make Happy 😊</button>
+            <button id="sad-btn">Make Sad 😢</button>
+        </div>
+        <div id="result" class="result" style="display:none;"></div>
+        <div id="error" class="error"></div>
+        <h2 style="margin-top:32px; text-align:center; color:#2d3748;">Message History</h2>
+        <div id="history"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = 'http://localhost:8000/messages';
+            const userMessage = document.getElementById('user-message');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const happyBtn = document.getElementById('happy-btn');
+            const sadBtn = document.getElementById('sad-btn');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            const historyDiv = document.getElementById('history');
+
+            function showResult(text) {
+                resultDiv.textContent = text;
+                resultDiv.style.display = 'block';
+                errorDiv.textContent = '';
+            }
+            function showError(msg) {
+                errorDiv.textContent = msg;
+                resultDiv.style.display = 'none';
+            }
+            function clearResult() {
+                resultDiv.style.display = 'none';
+                errorDiv.textContent = '';
+            }
+
+            function renderHistory(messages) {
+                if (!messages.length) {
+                    historyDiv.innerHTML = '<div style="color:#718096;text-align:center;">No messages yet.</div>';
+                    return;
+                }
+                historyDiv.innerHTML = messages.map(msg => {
+                    const isConverted = msg.bot_message && msg.bot_message.trim() !== '';
+                    return `
+                        <div style="background:#f7fafc;padding:10px 12px;margin-bottom:8px;border-radius:6px;">
+                            <div><b>User:</b> ${msg.user_message}</div>
+                            <div><b>Original Sentiment:</b> ${msg.sentinment ?? ''}</div>
+                            ${isConverted ? `<div><b>Converted:</b> ${msg.bot_message}</div>` : ''}
+                            <div style="font-size:0.9em;color:#718096;">${new Date(msg.timestamp).toLocaleString()}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            async function fetchHistory() {
+                try {
+                    const response = await fetch(apiUrl);
+                    if (!response.ok) throw new Error('Failed to fetch history');
+                    const data = await response.json();
+                    renderHistory(data);
+                } catch (err) {
+                    historyDiv.innerHTML = '<div class="error">Could not load message history.</div>';
+                }
+            }
+
+            async function analyzeSentiment(message) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_message: message, timestamp: new Date().toISOString()})
+                    });
+                    if (!response.ok) throw new Error('Server error');
+                    const data = await response.json();
+                    showResult(`Sentiment Score: ${data.sentinment}`);
+                    fetchHistory();
+                } catch (err) {
+                    showError('Failed to analyze sentiment.');
+                }
+            }
+
+            async function convertMessage(message, mood) {
+                try {
+                    const endpoint = mood === 'happy' ? '/happy/' : '/sad/'; // Add trailing slash
+                    const response = await fetch(apiUrl + endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_message: message, timestamp: new Date().toISOString() })
+                    });
+                    if (!response.ok) throw new Error('Server error');
+                    const data = await response.json();
+                    userMessage.value = data.bot_message || message;
+                    showResult(`Original msg Sentiment Score: ${data.sentinment} | Converted to ${mood.charAt(0).toUpperCase() + mood.slice(1)}!`);
+                    fetchHistory();
+                } catch (err) {
+                    showError(`Failed to convert message to ${mood}.`);
+                }
+            }
+
+            analyzeBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                analyzeSentiment(msg);
+            });
+            happyBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                console.log("Happy button clicked with message:", msg);
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                convertMessage(msg, 'happy');
+            });
+            sadBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                console.log("Sad button clicked with message:", msg);
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                convertMessage(msg, 'sad');
+            });
+
+            // Initial load
+            fetchHistory();
+        });
+    </script>
+</body>
+</html>
