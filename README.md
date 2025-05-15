@@ -37,3 +37,7 @@ docker compose up
 
 #### TO CLEAN CONTAINERS AND VOLUME
 ```docker compose down -v```
+
+
+### Demo Video
+https://youtu.be/jHy1Wj2u5NI
