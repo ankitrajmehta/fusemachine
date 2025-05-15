@@ -4,18 +4,12 @@ import asyncio
 
 ENDPOINT = "http://localhost:8000/messages"
 
-# @pytest.mark.asyncio
-# async def test_calculate_sentinment_callable():
-#     # Should not raise, and should return something string-like
-#     result = await main.calculate_sentinment("Test message")
-#     assert isinstance(result, str)
+# Check if app exists
+def test_app_exists():
+    response = requests.get(ENDPOINT)
+    assert response.status_code == 200
 
-# @pytest.mark.asyncio
-# async def test_convert_message_callable():
-#     # Should not raise, and should return something string-like
-#     result = await main.convert_message("happy", "Test message")
-#     assert isinstance(result, str)
-
+# Check if sentiment is calculated correctly
 def test_create_message_and_calculate_sentiment():
     payload = {
             "user_message": "test message with no sentinment",
@@ -26,6 +20,7 @@ def test_create_message_and_calculate_sentiment():
     assert response.status_code == 200
     assert -1 <= float(response.json()['sentinment']) <= 1
 
+# Check if the bot message is happy
 def test_create_message_happy():
     payload = {
             "user_message": "i am very sad",
@@ -38,7 +33,7 @@ def test_create_message_happy():
     payload["user_message"] = response.json()['bot_message']
     assert float(requests.post(ENDPOINT, json= payload).json()['sentinment']) > 0
 
-
+# Check if the bot message is sad
 def test_create_message_sad():
     payload = {
             "user_message": "i am very happy",
@@ -50,7 +45,3 @@ def test_create_message_sad():
     assert response.json()['bot_message'] is not None
     payload["user_message"] = response.json()['bot_message']
     assert float(requests.post(ENDPOINT, json= payload).json()['sentinment']) < 0
-
-def test_app_exists():
-    response = requests.get(ENDPOINT)
-    assert response.status_code == 200
