@@ -21,8 +21,8 @@
             padding: 32px 24px 24px 24px;
             border-radius: 12px;
             box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 400px;
+            width: 80vw;
+            max-width: 800px;
         }
         h1 {
             text-align: center;
@@ -89,6 +89,11 @@
             <button id="happy-btn">Make Happy 😊</button>
             <button id="sad-btn">Make Sad 😢</button>
         </div>
+        <div class="btn-row">
+            <button id="prof-btn">Make Profesional</button>
+            <button id="fun-btn">Make Funny</button>
+            <button id="ser-btn">Make Serious</button>
+        </div>
         <div id="result" class="result" style="display:none;"></div>
         <div id="error" class="error"></div>
         <h2 style="margin-top:32px; text-align:center; color:#2d3748;">Message History</h2>
@@ -101,6 +106,9 @@
             const analyzeBtn = document.getElementById('analyze-btn');
             const happyBtn = document.getElementById('happy-btn');
             const sadBtn = document.getElementById('sad-btn');
+            const profBtn = document.getElementById('prof-btn');
+            const funBtn = document.getElementById('fun-btn');
+            const serBtn = document.getElementById('ser-btn');
             const resultDiv = document.getElementById('result');
             const errorDiv = document.getElementById('error');
             const historyDiv = document.getElementById('history');
@@ -124,7 +132,7 @@
                     historyDiv.innerHTML = '<div style="color:#718096;text-align:center;">No messages yet.</div>';
                     return;
                 }
-                historyDiv.innerHTML = messages.map(msg => {
+                historyDiv.innerHTML = [...messages].reverse().map(msg => {
                     const isConverted = msg.bot_message && msg.bot_message.trim() !== '';
                     return `
                         <div style="background:#f7fafc;padding:10px 12px;margin-bottom:8px;border-radius:6px;">
@@ -157,7 +165,7 @@
                     });
                     if (!response.ok) throw new Error('Server error');
                     const data = await response.json();
-                    showResult(`Sentiment Score (-1: Negetive, 1: Positive): ${data.sentinment}`);
+                    showResult(`Sentiment Score (-1: Negative, 1: Positive): ${data.sentinment}`);
                     fetchHistory();
                 } catch (err) {
                     showError('Failed to analyze sentiment.');
@@ -166,8 +174,8 @@
 
             async function convertMessage(message, mood) {
                 try {
-                    const endpoint = mood === 'happy' ? '/happy/' : '/sad/'; // Add trailing slash
-                    const response = await fetch(apiUrl + endpoint, {
+                    const convertapiUrl = `http://localhost:8000/messages/${mood}`;
+                    const response = await fetch(convertapiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ user_message: message, timestamp: new Date().toISOString() })
@@ -207,6 +215,33 @@
                     return;
                 }
                 convertMessage(msg, 'sad');
+            });
+            profBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                console.log("Professional button clicked with message:", msg);
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                convertMessage(msg, 'professional');
+            });
+            funBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                console.log("Funny button clicked with message:", msg);
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                convertMessage(msg, 'funny');
+            });
+            serBtn.addEventListener('click', () => {
+                const msg = userMessage.value.trim();
+                console.log("Serious button clicked with message:", msg);
+                if (!msg) {
+                    showError('Please enter a message.');
+                    return;
+                }
+                convertMessage(msg, 'serious');
             });
 
             // Initial load
