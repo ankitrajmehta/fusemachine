@@ -2,6 +2,9 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
+
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 COPY pyproject.toml requirements.txt ./
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir wheels -r requirements.txt
 
