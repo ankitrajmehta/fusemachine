@@ -51,7 +51,7 @@ async def calculate_sentinment(user_message: str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"Calculate the sentinment of the following message: {user_message}. Please respond with float value between -1 and 1, where -1 is very negative, 0 is neutral, and 1 is very positive. Do not include any other text in your response. Response example: 0.5",
+                "content": f"Calculate the sentinment of the message in triple backticks. Please respond with float value between -1 and 1, where -1 is very sad or negetive, 0 is neutral, and 1 is very happy or positive. Do not include any other text in your response. Response example: 0.5.   ```{user_message}```",
             }
         ],
         model="llama-3.3-70b-versatile",
@@ -66,7 +66,7 @@ async def convert_message(mood:str ,user_message: str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"Convert the following message to a more {mood} tone: {user_message}. Please respond with the converted message only. Do not include any other text in your response.",
+                "content": f"Convert the following message to a more {mood} tone: ```{user_message}```. Please respond with the converted message only. Do not include any other text in your response. Try not to change the meaning of the message. Don't add new information. Respond with the converted message only.",
             }
         ],
         model="llama-3.3-70b-versatile",
