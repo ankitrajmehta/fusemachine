@@ -6,6 +6,8 @@
 
 Analyze and convert the sentiment of any text message, power by Llama 3.3, hosted on Groq
 
+It also uses mongodb through docker volume to store messages.
+
 # SET UP
 
 1. **Clone the repository**
