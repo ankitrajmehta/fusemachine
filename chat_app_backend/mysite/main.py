@@ -66,7 +66,7 @@ async def convert_message(mood:str ,user_message: str) -> str:
         messages=[
             {
                 "role": "user",
-                "content": f"Convert the following message to a more {mood} tone: ```{user_message}```. Please respond with the converted message only. Do not include any other text in your response. Try not to change the meaning of the message. Don't add new information. Respond with the converted message only.",
+                "content": f"Convert the following message to a more {mood} tone: ```{user_message}```. Please respond with the converted message only. Do not include any other text in your response. Don't add new information. Respond with the converted message only.",
             }
         ],
         model="llama-3.3-70b-versatile",

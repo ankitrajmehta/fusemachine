@@ -32,7 +32,7 @@ def test_create_message_happy():
             "timestamp": "2025-05-14T12:00:00Z",
             "replied": False
             }
-    response = requests.post(ENDPOINT + "/happy/", json=payload)
+    response = requests.post(ENDPOINT + "/happy", json=payload)
     assert response.status_code == 200
     assert response.json()['bot_message'] is not None
     payload["user_message"] = response.json()['bot_message']
@@ -45,7 +45,7 @@ def test_create_message_sad():
             "timestamp": "2025-05-14T12:00:00Z",
             "replied": False
             }
-    response = requests.post(ENDPOINT + "/sad/", json=payload)
+    response = requests.post(ENDPOINT + "/sad", json=payload)
     assert response.status_code == 200
     assert response.json()['bot_message'] is not None
     payload["user_message"] = response.json()['bot_message']
