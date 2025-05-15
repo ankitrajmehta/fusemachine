@@ -1,6 +1,6 @@
 services:
   backend:
-    image: chatapp-backend
+    image: ankitrajmehta/chatapp-backend:latest
     pull_policy: never
     build:
       context: ./chat_app_backend
@@ -14,14 +14,14 @@ services:
     #   - ./backend/src:/app/src
     # command: ["uvicorn", "mysite.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     env_file:
-      - ./chat_app_backend/.env
+      - .env
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
       - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
     container_name: chat_app_backend_app
 
   frontend:
-    image: chatapp-frontend
+    image: ankitrajmehta/chatapp-frontend:latest
     pull_policy: never
     build:
       context: ./frontend
@@ -41,7 +41,7 @@ services:
     volumes:
            - chat_app_mongodb_data:/data/db
     env_file:
-      - ./mongodb/.env
+      - .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}

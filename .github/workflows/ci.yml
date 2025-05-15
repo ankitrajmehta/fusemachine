@@ -26,14 +26,14 @@ jobs:
       - name: Create mongodb .env file
         run: |
           mkdir -p mongodb
-          echo "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}" > mongodb/.env
-          echo "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}" >> mongodb/.env
+          echo "MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}" > .env
+          echo "MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}" >> .env
 
       - name: Create chat_app_backend .env file
         run: |
           mkdir -p chat_app_backend
-          echo "MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}" > chat_app_backend/.env
-          echo "GROQ_API_KEY=${GROQ_API_KEY}" >> chat_app_backend/.env
+          echo "MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}" >> .env
+          echo "GROQ_API_KEY=${GROQ_API_KEY}" >> .env
 
       - name: Set up Python
         uses: actions/setup-python@v5

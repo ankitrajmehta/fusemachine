@@ -7,19 +7,32 @@
 Analyze and convert the sentiment of any text message, power by Llama 3.3, hosted on Groq
 
 # SET UP
-create ```mongodb\.env``` exactly as in ```mongodb\.env.example``` (Can simply rename it as well)
 
-create ```chat_app_backend\.env``` like ```chat_app_backend\.env.example```, by filing in the Groq api from https://console.groq.com/keys
+1. **Clone the repository**
+    ```bash
+    # Clone the repository
+    git clone https://github.com/ankitrajmehta/fusemachine.git
+
+    # Navigate to the project directory
+    cd chat_app
+    ```
+2. **Configure Environment Variables**
+   - Copy or rename `.env.example` to `.env`, and fill in your Groq API key (https://console.groq.com/keys).
 
 # TO RUN
 
-```docker compose build```
+```bash
+docker compose build
+```
 
-```docker compose up```
+```bash
+docker compose up
+```
 
-### Site will be hosted at: http://localhost/
 
-### Docs at: http://localhost:8000/docs
+- The site will be available at: [http://localhost/](http://localhost/)
+- API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+
 --------
 
 #### TO CLEAN CONTAINERS AND VOLUME
